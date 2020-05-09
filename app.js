@@ -1,7 +1,7 @@
 const express = require('express');
-const request = require('request');
 const bodyParser = require('body-parser');
 const path = require('path');
+const fetch = require('node-fetch');
 
 const app = express();
 
@@ -37,27 +37,18 @@ app.post('/signup', (req, res) => {
 
   const postData = JSON.stringify(data);
 
-  const options = {
-    url: 'https://<DC>.api.mailchimp.com/3.0/lists/<YOUR_LIST_ID>',
+  fetch('https://usX.api.mailchimp.com/3.0/lists/<YOUR_AUDIENCE_ID>', {
     method: 'POST',
     headers: {
       Authorization: 'auth <YOUR_API_KEY>'
     },
     body: postData
-  };
-
-  request(options, (err, response, body) => {
-    if (err) {
-      res.redirect('/fail.html');
-    } else {
-      if (response.statusCode === 200) {
-        res.redirect('/success.html');
-      } else {
-        res.redirect('/fail.html');
-      }
-    }
-  });
-});
+  })
+    .then(res.statusCode === 200 ?
+      res.redirect('/success.html') :
+      res.redirect('/fail.html'))
+    .catch(err => console.log(err))
+})
 
 const PORT = process.env.PORT || 5000;
 
