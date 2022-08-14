@@ -7,7 +7,7 @@ const app = express();
 
 // Bodyparser Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express.json());
 // Static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -19,6 +19,16 @@ app.post('/signup', (req, res) => {
   if (!firstName || !lastName || !email) {
     res.redirect('/fail.html');
     return;
+  }
+  if(!validateEmail(email)) {
+    res.redirect('/fail.html');
+    return;
+  }
+
+  //validating email
+  function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
   }
 
   // Construct req data
